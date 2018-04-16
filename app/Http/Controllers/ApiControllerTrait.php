@@ -22,10 +22,12 @@ trait ApiControllerTrait{
     public function index(Request $request){
 
         $data = $request->all();
-        //$limit = $data['limit'] ?? 20;   PHP 7
-        $limit = empty($data['limit']) ? $data['limit'] : 20;
-        $order = empty($data['order']) ? $data['limit'] : null;
-        if($order != null){
+
+        //$limit = empty($data['limit']) ? $data['limit'] : 20;
+        //$order = empty($data['order']) ? $data['limit'] : null;
+        $limit = $data['limit'] ?? 20;
+        $order = $data['order'] ?? null;
+        if($order !== null){
             $order = explode(',', $order);
         }
         $order[0] = $order[0] ?? 'id';
@@ -33,17 +35,17 @@ trait ApiControllerTrait{
 
         $where = $data['where'] ?? [];
         $like = null;
-        if(is_array($data['like'])){
+        if(!empty($data['like']) and is_array($data['like'])){
             $like = $data['like'];
             $key = key(reset($like));
-            $like[0] = $key
+            $like[0] = $key;
             $like[1] = '%'.$like[$key].'%';
         }
 
         $results = $this->model
-            ->order($order[0], $order[1])
-            ->where(function($query) use ($like){
-                if($like){
+            ->orderBy($order[0], $order[1])
+            ->where(function ($query) use ($like) {
+                if ($like) {
                     return $query->where($like[0], 'like', $like[1]);
                 }
                 return $query;
@@ -52,6 +54,32 @@ trait ApiControllerTrait{
             ->with($this->relationships())
             ->paginate($limit);
         return response()->json($results);
+    }
+
+    public function show($id){
+        $result = $this->model
+            ->with($this->relationships())
+            ->findOrFail($id);
+        return response()->json($result);
+    }
+
+    public function store(Request $request){
+        $this->validate($request, $this->rules ?? [], $this->messages ?? []);
+        $result = $this->model->create($request->all());
+        return response()->json($result);
+    }
+
+    public function update(Request $request, $id){
+        $this->validate($request, $this->rules ?? [], $this->messages ?? []);
+        $result = $this->model->findOrFail($id);
+        $result->update($request->all());
+        return response()->json($result);
+    }
+
+    public function destroy($id){
+        $result = $this->model->findOrFail($id);
+        $result->delete($id);
+        return response()->json($result);
     }
 
     protected function relationships(){
