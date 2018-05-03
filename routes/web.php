@@ -11,14 +11,17 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+//Dusterio\LumenPassport\LumenPassport::routes($app); //Rotas para o processo de autenticação
+Dusterio\LumenPassport\LumenPassport::routes($app);
+
+$app->get('/', function () use ($app) {
+    return $app->app->version();
 });
 
-$router->group(['prefix' => 'api/v1', 'namespace' => 'Api\V1'], function() use ($router){
-    $router->get('restaurants', 'RestaurantsController@index');
-    $router->get('restaurants/{id}', 'RestaurantsController@show');
-    $router->post('restaurants', 'RestaurantsController@store');
-    $router->put('restaurants/{id}', 'RestaurantsController@update');
-    $router->delete('restaurants/{id}', 'RestaurantsController@destroy');
+$app->group(['prefix' => 'api/v1', 'namespace' => 'Api\V1', 'middleware' => ['auth']], function() use ($app){
+    $app->get('restaurants', 'RestaurantsController@index');
+    $app->get('restaurants/{id}', 'RestaurantsController@show');
+    $app->post('restaurants', 'RestaurantsController@store');
+    $app->put('restaurants/{id}', 'RestaurantsController@update');
+    $app->delete('restaurants/{id}', 'RestaurantsController@destroy');
 });

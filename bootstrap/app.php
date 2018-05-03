@@ -1,13 +1,10 @@
 <?php
-
 require_once __DIR__.'/../vendor/autoload.php';
-
 try {
     (new Dotenv\Dotenv(__DIR__.'/../'))->load();
 } catch (Dotenv\Exception\InvalidPathException $e) {
     //
 }
-
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -18,14 +15,11 @@ try {
 | application as an "IoC" container and router for this framework.
 |
 */
-
 $app = new Laravel\Lumen\Application(
     realpath(__DIR__.'/../')
 );
-
 $app->withFacades();
 $app->withEloquent();
-
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -36,29 +30,23 @@ $app->withEloquent();
 | your own bindings here if you like or you can make another file.
 |
 */
-
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     App\Exceptions\Handler::class
 );
-
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     App\Console\Kernel::class
 );
-
-// Configuração do Filesystem para trabalhar com uploads, etc
 $app->singleton(
     Illuminate\Contracts\Filesystem\Factory::class,
-    function ($app){
+    function ($app) {
         return new Illuminate\Filesystem\FilesystemManager($app);
     }
 );
-$app->singleton( 'filesystem', function($app){
- return $app->loadcomponent('filesystems', Illuminate\Filesystem\FilesystemServiceProvider::class, 'filesystem');
+$app->singleton('filesystem', function ($app) {
+    return $app->loadComponent('filesystems', Illuminate\Filesystem\FilesystemServiceProvider::class, 'filesystem');
 });
-
-
 /*
 |--------------------------------------------------------------------------
 | Register Middleware
@@ -69,15 +57,13 @@ $app->singleton( 'filesystem', function($app){
 | route or middleware that'll be assigned to some specific routes.
 |
 */
-
-// $app->middleware([
-//    App\Http\Middleware\ExampleMiddleware::class
-// ]);
+/*$app->middleware([
+    \Barryvdh\Cors\HandleCors::class
+]); */
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
 ]);
-
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -88,15 +74,18 @@ $app->routeMiddleware([
 | totally optional, so you are not required to uncomment this line.
 |
 */
-
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
-$app->register(App\Providers\EventServiceProvider::class);
+// $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
-//$app->register(Laravel\Passport\PassportServiceProvider::class);
-//$app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 
+
+
+
+
+
+Dusterio\LumenPassport\LumenPassport::routes($app);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
@@ -107,14 +96,9 @@ $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
 | can respond to, as well as the controllers that may handle them.
 |
 */
-
-$app->router->group([
-    'namespace' => 'App\Http\Controllers',
-], function ($router) {
+$app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../routes/web.php';
 });
-
-// define que vai usar o ficheiro de configuração ./config/fulesystems.php
 $app->configure('filesystems');
-
+//$app->configure('cors');
 return $app;

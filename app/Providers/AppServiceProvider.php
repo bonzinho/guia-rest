@@ -12,11 +12,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-
         Restaurant::observe(RestaurantObserver::class);
     }
 
-    /**
+    /**composer require appzcoder/lumen-routes-list
      * Register any application services.
      *
      * @return void
