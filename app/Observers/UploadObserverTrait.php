@@ -39,7 +39,7 @@ trait UploadObserverTrait{
 
         $extension = $model->$field->extension(); // get file extension
         $name = bin2hex(openssl_random_pseudo_bytes(8)); // random name
-        $name = $name . $extension; //concat name and extension
+        $name = $name .'.'. $extension; //concat name and extension
 
         $model->$field->storeAs($this->path, $name); // Sendo to S3 Amazon
         $model->$field = $name; // update with name for db

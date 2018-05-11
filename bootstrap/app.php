@@ -57,9 +57,9 @@ $app->singleton('filesystem', function ($app) {
 | route or middleware that'll be assigned to some specific routes.
 |
 */
-/*$app->middleware([
+$app->middleware([
     \Barryvdh\Cors\HandleCors::class
-]); */
+]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
@@ -79,6 +79,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+$app->register(Barryvdh\Cors\ServiceProvider::class);
 
 
 
@@ -100,5 +101,5 @@ $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../routes/web.php';
 });
 $app->configure('filesystems');
-//$app->configure('cors');
+$app->configure('cors');
 return $app;
