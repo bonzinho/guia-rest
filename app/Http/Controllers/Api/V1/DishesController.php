@@ -21,6 +21,7 @@ class DishesController extends Controller
         'required' => ':attribute é obrigatório',
         'min' => ':attribute precisa de melo menos :min caracteres',
     ];
+
     public function __construct(Dish $model)
     {
         $this->model = $model;

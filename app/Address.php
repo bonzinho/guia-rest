@@ -10,7 +10,17 @@ class Address extends Model{
         'address',
         'number',
         'localidade',
+        'city',
         'distrito',
-        'complement'
+        'complement',
+        'phone',
+        'phone_count',
     ];
+
+
+    public function restaurant(){
+        // Belongs to porque o campo restaurant_id está na tabela Address (relacionamento 1 para 1)
+        return $this->belongsTo(Restaurant::class);
+    }
+
 }
