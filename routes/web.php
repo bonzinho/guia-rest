@@ -36,7 +36,7 @@ $app->group(['prefix' => 'api/v1', 'namespace' => 'Api\V1'], function() use ($ap
 
 
     //TESTE DE DOWNLOAD SEM CREDENCIAIS
-    $app->get('restaurants/download', 'ExampleController@downloadExcel');
+    //$app->get('restaurants/download', 'ExampleController@downloadExcel');
 });
 
 $app->group(['prefix' => 'api/v1', 'namespace' => 'Api\V1', 'middleware' => ['auth']], function() use ($app){
@@ -56,7 +56,7 @@ $app->group(['prefix' => 'api/v1', 'namespace' => 'Api\V1', 'middleware' => ['au
     $app->delete('restaurants/photos/{id:[0-9]+}', 'RestaurantPhotosController@destroy');
 
     // TESTE DE DOWNLOAD COM CREDENCIAIS
-    //$app->get('restaurants/download', 'ExampleController@downloadExcel');
+    $app->get('restaurants/download', 'ExampleController@downloadExcel');
 
 
     $app->get('dishes/{id:[0-9]+}', 'dishesController@show');
